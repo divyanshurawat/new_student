@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sceelie/Authentication/login_page.dart';
 
-import '../color_class.dart';
+import '../../color_class.dart';
+
 
 class SignUpScreen extends StatelessWidget {
   TextEditingController emailController = new TextEditingController();

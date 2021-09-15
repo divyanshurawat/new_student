@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sceelie/AllFunctions.dart';
-import 'package:sceelie/case_management/case_manage_admin.dart';
+import 'package:sceelie/screens/case_screen.dart';
 import 'package:sceelie/model_classes/case_manage_admin_model.dart';
 
 import '../color_class.dart';

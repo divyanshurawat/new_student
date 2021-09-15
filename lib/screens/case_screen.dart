@@ -4,11 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sceelie/AllFunctions.dart';
-import 'package:sceelie/Selected_Case/Selected_Case.dart';
-import 'package:sceelie/case_management/list_item.dart';
+import 'package:sceelie/Selected_Case/case_detail.dart';
+import 'package:sceelie/case_management/item_cases.dart';
 import 'package:sceelie/model_classes/case_manage_admin_model.dart';
+import 'package:sceelie/widgets/list_fetch.dart';
 import '../../../color_class.dart';
-
+List<CaseManageAdminModel> caseManageAdminForDisplay = [];
 class CaseManageAdmin extends StatefulWidget {
   const CaseManageAdmin({Key? key}) : super(key: key);
 
@@ -28,57 +29,93 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
   bool free = false;
   bool premium = false;
   TextEditingController _controller = TextEditingController();
-  List<CaseManageAdminModel> _caseManageAdmin = [
-    CaseManageAdminModel(
-        title: "Neoplasm",
-        head: "Oncology",
-        num: "032",
-        subscription: 1,
-        rank: 1),
-    CaseManageAdminModel(
-        title: "Lung Cancer",
-        head: "Oncology",
-        num: "452",
-        subscription: 0,
-        rank: 2),
-    CaseManageAdminModel(
-        title: "Measles",
-        head: "Communication Dis ",
-        num: "365",
-        subscription: 1,
-        rank: 3),
-    CaseManageAdminModel(
-        title: "Clavicular fx",
-        head: "Oncology",
-        num: "425",
-        subscription: 0,
-        rank: 4),
-    CaseManageAdminModel(
-        title: "Coma",
-        head: "Traumatology",
-        num: "456",
-        subscription: 1,
-        rank: 5),
-    CaseManageAdminModel(
-        title: "Jaundice",
-        head: "Hepatologu",
-        num: "100",
-        subscription: 0,
-        rank: 6),
-    CaseManageAdminModel(
-        title: "Neoplasm",
-        head: "Oncology",
-        num: "233",
-        subscription: 1,
-        rank: 7),
-  ];
-  List<CaseManageAdminModel> _caseManageAdminForDisplay = [];
+  
+ 
   List deleteItemsList = [];
 
   @override
   void initState() {
     super.initState();
-    _caseManageAdminForDisplay = _caseManageAdmin;
+    caseManageAdminForDisplay = caseManageAdmin;
+  }
+  void ask(){
+    showDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            "DELETE",
+            style: TextStyle(
+                fontSize: 17,
+                fontWeight:
+                FontWeight.bold),
+          ),
+          content: Padding(
+            padding:
+            const EdgeInsets.only(
+                top: 10.0),
+            child: selectAll!.contains("Yes")?Text(
+                "Are you sure you want to delete all items?",
+                style: TextStyle(
+                    fontWeight:
+                    FontWeight.bold,
+                    fontSize: 20)):Text(
+                "Are you sure you want to delete ${deleteItemsList.length} items?",
+                style: TextStyle(
+                    fontWeight:
+                    FontWeight.bold,
+                    fontSize: 20)),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              child: Text("Yes",
+                  style: TextStyle(
+                      color: Colors
+                          .black)),
+              onPressed: () {
+
+                for (int i = 0; i < deleteItemsList.length; i++) {
+                  caseManageAdminForDisplay.remove(deleteItemsList[i]);
+                  setState(() {
+
+                    caseManageAdminForDisplay = List.from(caseManageAdminForDisplay);
+                  });
+
+                }
+                deleteItemsList = [];
+                if(selectAll!.contains('Yes')){
+                  caseManageAdminForDisplay.clear();
+                  setState(() {
+                    caseManageAdminForDisplay = List.from(caseManageAdminForDisplay);
+
+                    selectAll="No";
+                  });
+
+                }
+
+                Fluttertoast.showToast(
+                    msg:
+                    "is Deleted");
+
+
+                Navigator.pop(context);
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text("No",
+                  style: TextStyle(
+                      color: Colors
+                          .black)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+
   }
 
   @override
@@ -157,14 +194,10 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                         InkWell(
                           onTap: () {
                             setState(() {
-                              for (int i = 0; i < deleteItemsList.length; i++) {
-                                _caseManageAdminForDisplay.remove(deleteItemsList[i]);
-                              }
-                              deleteItemsList = [];
-                              if(selectAll!.contains('Yes')){
-                                _caseManageAdminForDisplay.clear();
-                                selectAll="No";
-                              }
+                              if(deleteItemsList.length>0||selectAll!.contains("Yes"))
+                              ask();
+
+
                             });
                           },
                           child: Container(
@@ -267,7 +300,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                           chosenValue1 = value!;
                                           print(chosenValue1);
                                           if (chosenValue1 == "Asc") {
-                                            _caseManageAdminForDisplay
+                                            caseManageAdminForDisplay
                                               ..sort(
                                                     (a, b) {
                                                   return a.num.toString()
@@ -277,7 +310,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                             setState(() {});
                                           }
                                           if (chosenValue1 == "Desc") {
-                                            _caseManageAdminForDisplay
+                                            caseManageAdminForDisplay
                                               ..sort(
                                                     (a, b) {
                                                   return b.num.toString()
@@ -327,7 +360,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                             chosenValue = value!;
                                             print(chosenValue);
                                             if (chosenValue == "A-Z") {
-                                              _caseManageAdminForDisplay
+                                              caseManageAdminForDisplay
                                                 ..sort(
                                                   (a, b) {
                                                     return a.title
@@ -341,7 +374,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                               setState(() {});
                                             }
                                             if (chosenValue == "Z-A") {
-                                              _caseManageAdminForDisplay
+                                              caseManageAdminForDisplay
                                                 ..sort(
                                                   (a, b) {
                                                     return b.title
@@ -363,26 +396,40 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                            itemCount: _caseManageAdminForDisplay.length,
+                            itemCount: caseManageAdminForDisplay.length,
                             padding: EdgeInsets.symmetric(vertical: 6),
                             itemBuilder: (_, index) {
                               return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                onTap: ()async {
+
+
+                             final List<CaseManageAdminModel> caseAdmin  = await  Navigator.of(context).push(MaterialPageRoute(
                                       builder: (_) => SelectedCase(
-                                            caseId: _caseManageAdminForDisplay[
+                                        index: index,
+                                        isFree: free,
+
+                                        caseManageAdminModel: caseManageAdminForDisplay,
+                                            caseId: caseManageAdminForDisplay[
                                                     index]
                                                 .num
                                                 .toString(),
                                             caseTitle:
-                                                _caseManageAdminForDisplay[
+                                                caseManageAdminForDisplay[
                                                         index]
                                                     .title,
                                             caseSubscription:
-                                                _caseManageAdminForDisplay[
+                                                caseManageAdminForDisplay[
                                                         index]
                                                     .subscription,
                                           )));
+                             if( caseAdmin!=null){
+                               setState(() {
+                                 caseManageAdminForDisplay = List.from(caseAdmin);
+                               });
+                             }
+
+
+
                                 },
                                 child: Stack(
                                   alignment: Alignment.centerRight,
@@ -393,14 +440,14 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                       isSelected: (bool value){
                                         setState(() {
                                           if (value) {
-                                            deleteItemsList.add(_caseManageAdminForDisplay[index]);
+                                            deleteItemsList.add(caseManageAdminForDisplay[index]);
                                           } else {
-                                            deleteItemsList.remove(_caseManageAdminForDisplay[index]);
+                                            deleteItemsList.remove(caseManageAdminForDisplay[index]);
                                           }
                                         });
                                         print("$index : $value");
 
-                                      }, key: Key(_caseManageAdminForDisplay[index].rank.toString()), item: _caseManageAdminForDisplay[index],
+                                      }, key: Key(caseManageAdminForDisplay[index].rank.toString()), item: caseManageAdminForDisplay[index],
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(right: 18.0),
@@ -422,7 +469,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                                   const EdgeInsets.only(
                                                       top: 10.0),
                                                   child: Text(
-                                                      "Are you sure you want to delete ${_caseManageAdmin[index].title}",
+                                                      "Are you sure you want to delete ${caseManageAdmin[index].title}",
                                                       style: TextStyle(
                                                           fontWeight:
                                                           FontWeight.bold,
@@ -437,11 +484,11 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                                     onPressed: () {
                                                       Fluttertoast.showToast(
                                                           msg:
-                                                          "${_caseManageAdminForDisplay[index].title} is Deleted");
+                                                          "${caseManageAdminForDisplay[index].title} is Deleted");
                                                       setState(() {
                                                         AllFunctions
                                                             .removeSingleItem(
-                                                            _caseManageAdminForDisplay,
+                                                            caseManageAdminForDisplay,
                                                             index);
                                                       });
 
@@ -461,48 +508,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                               );
                                             },
                                           );
-                                          // AwesomeDialog(
-                                          //   btnOkText: 'Yes',
-                                          //   btnCancelText: "No",
-                                          //   dialogBackgroundColor:
-                                          //       cColor().black,
-                                          //   btnOkColor: cColor().yellow,
-                                          //   context: context,
-                                          //   dialogType:
-                                          //       DialogType.INFO_REVERSED,
-                                          //   borderSide: BorderSide(
-                                          //       color: cColor().yellow,
-                                          //       width: 2),
-                                          //   buttonsBorderRadius:
-                                          //       BorderRadius.all(
-                                          //           Radius.circular(2)),
-                                          //   headerAnimationLoop: false,
-                                          //   animType: AnimType.BOTTOMSLIDE,
-                                          //   title: 'DELETE',
-                                          //   desc:
-                                          //       'Are you Sure want to Delete ${_caseManageAdmin[index].title}',
-                                          //   showCloseIcon: true,
-                                          //   btnCancelOnPress: () {},
-                                          //   btnOkOnPress: () {
-                                          //     setState(() {
-                                          //       _caseManageAdminForDisplay
-                                          //           .removeAt(index);
-                                          //     });
 
-                                          //     Fluttertoast.showToast(
-                                          //         msg:
-                                          //             "${_caseManageAdminForDisplay[index].title} is Deleted",
-                                          //         toastLength:
-                                          //             Toast.LENGTH_SHORT,
-                                          //         gravity:
-                                          //             ToastGravity.CENTER,
-                                          //         timeInSecForIosWeb: 1,
-                                          //         backgroundColor:
-                                          //             cColor().black,
-                                          //         textColor: cColor().yellow,
-                                          //         fontSize: 16.0);
-                                          //   },
-                                          // )..show();
                                         },
                                         icon: Icon(
                                           Icons.delete,
@@ -546,11 +552,11 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                   onChanged: (text) {
                                     text = text.toLowerCase();
                                     setState(() {
-                                      _caseManageAdminForDisplay =
-                                          _caseManageAdmin.where((element) {
-                                        var _caseManageAdminTitle =
+                                      caseManageAdminForDisplay =
+                                          caseManageAdmin.where((element) {
+                                        var caseManageAdminTitle =
                                             element.title.toLowerCase();
-                                        return _caseManageAdminTitle
+                                        return caseManageAdminTitle
                                             .contains(text);
                                       }).toList();
                                     });
@@ -585,7 +591,7 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                             MaterialButton(
                               onPressed: () {
                                 setState(() {
-                                  _caseManageAdminForDisplay = _caseManageAdmin;
+                                  caseManageAdminForDisplay = caseManageAdmin;
                                   all = true;
                                   free = false;
                                   premium = false;
@@ -606,13 +612,15 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                                 onPressed: () {
                                   setState(() {
                                     all = false;
+                                    caseManageAdminForDisplay =List.from(caseManageAdminForDisplay);
+
                                     free = true;
                                     premium = false;
-                                    _caseManageAdminForDisplay =
-                                        _caseManageAdmin.where((element) {
-                                      var _caseManageAdminTitle =
+                                    caseManageAdminForDisplay =
+                                        caseManageAdmin.where((element) {
+                                      var caseManageAdminTitle =
                                           element.subscription.toString();
-                                      return _caseManageAdminTitle
+                                      return caseManageAdminTitle
                                           .contains("0");
                                     }).toList();
                                   });
@@ -631,14 +639,18 @@ class _CaseManageAdminState extends State<CaseManageAdmin> {
                             MaterialButton(
                                 onPressed: () {
                                   setState(() {
+
+                                      caseManageAdminForDisplay =List.from(caseManageAdminForDisplay);
+                                      // isPremium=true;
+
                                     free = false;
                                     all = false;
                                     premium = true;
-                                    _caseManageAdminForDisplay =
-                                        _caseManageAdmin.where((element) {
-                                      var _caseManageAdminTitle =
+                                    caseManageAdminForDisplay =
+                                        caseManageAdmin.where((element) {
+                                      var caseManageAdminTitle =
                                           element.subscription.toString();
-                                      return _caseManageAdminTitle
+                                      return caseManageAdminTitle
                                           .contains("1");
                                     }).toList();
                                   });

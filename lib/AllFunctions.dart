@@ -16,6 +16,7 @@ class AllFunctions {
     _caseManageAdminForDisplay.removeAt(index);
   }
 
+
   checkItem(
     int selectedIndex,
     int index,
@@ -27,4 +28,5 @@ class AllFunctions {
       checkedValue1 = value;
     }
   }
+
 }

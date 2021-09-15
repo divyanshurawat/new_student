@@ -1,26 +1,42 @@
+
+
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sceelie/case_management/case_manage_admin.dart';
+import 'package:sceelie/screens/case_screen.dart';
+import 'package:sceelie/model_classes/case_manage_admin_model.dart';
 
+import '../AllFunctions.dart';
 import '../color_class.dart';
 
 class SelectedCase extends StatefulWidget {
   final String caseId;
   final String caseTitle;
+  final bool isFree;
+   final List<CaseManageAdminModel> caseManageAdminModel;
   final int caseSubscription;
+  final int index;
+
 
   const SelectedCase(
-      {required this.caseId,
+
+      {
+        required this.isFree,
+        required this.index,
+        required this.caseId,
       required this.caseTitle,
-      required this.caseSubscription});
+      required this.caseSubscription,
+      required this.caseManageAdminModel});
 
   @override
   _SelectedCaseState createState() => _SelectedCaseState();
 }
 
 class _SelectedCaseState extends State<SelectedCase> {
+bool isPremium =false;
   List<Widget> tablist = [
     Container(
       height: 60,
@@ -50,7 +66,20 @@ class _SelectedCaseState extends State<SelectedCase> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(widget.caseSubscription);
+    checkSubscription();
+
+  }
+  checkSubscription(){
+    if(widget.caseSubscription==1){
+      setState(() {
+        isPremium = true;
+      });
+    }else{
+      setState(() {
+        isPremium = false;
+      });
+    }
+
   }
 
   @override
@@ -100,7 +129,7 @@ class _SelectedCaseState extends State<SelectedCase> {
                     // )),
                     InkWell(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context,widget.caseManageAdminModel);
                       },
                       child: Container(
                         width: med.width * 0.20,
@@ -181,23 +210,43 @@ class _SelectedCaseState extends State<SelectedCase> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context,widget.caseManageAdminModel);
                     },
                     child: Text(
                       "Back",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
-                MaterialButton(
-                    color: widget.caseSubscription == 1
+              MaterialButton(
+                    color: isPremium
                         ? Colors.brown
                         : Colors.brown[300],
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    onPressed: () {},
+                    onPressed: () {
+                      if(isPremium){
+
+                        widget.caseManageAdminModel[widget.index].subscription=0;
+                        setState(() {
+                          caseManageAdminForDisplay =List.from(widget.caseManageAdminModel);
+                          isPremium=false;
+                        });
+                      }
+
+                      else{
+                        widget.caseManageAdminModel[widget.index].subscription=1;
+                        setState(() {
+                          caseManageAdminForDisplay =List.from(widget.caseManageAdminModel);
+                         // isPremium=true;
+                        });
+                      }
+
+
+
+                    },
                     child: Text(
                       "Premium",
                       style: TextStyle(
-                          color: widget.caseSubscription == 1
+                          color: isPremium
                               ? Colors.white
                               : Colors.grey[300],
                           fontSize: 18),
@@ -217,7 +266,7 @@ class _SelectedCaseState extends State<SelectedCase> {
                             ),
                             content: Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: Text("78 Back pain",
+                              child: Text(widget.caseTitle,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20)),
@@ -226,7 +275,29 @@ class _SelectedCaseState extends State<SelectedCase> {
                               CupertinoDialogAction(
                                 child: Text("Yes",
                                     style: TextStyle(color: Colors.black)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                 // Navigator.pop(context);
+                                //  Navigator.popReplacement(context, MaterialPageRoute(builder: (context)=>CaseManageAdmin()));
+
+                               //widget.caseManageAdminModel =List.from(widget.caseManageAdminModel);
+                                  Fluttertoast.showToast(
+                                      msg:
+                                      "${widget.caseManageAdminModel[widget.index].title} is Deleted");
+
+                                    AllFunctions
+                                        .removeSingleItem(
+                                        widget.caseManageAdminModel,
+                                        widget.index);
+                                    setState(() {
+                                     List<CaseManageAdminModel> caseManageAdminForDisplay = List.from(widget.caseManageAdminModel);
+                                     Navigator.pop(context,caseManageAdminForDisplay);
+                                    });
+
+
+
+
+                                },
                               ),
                               CupertinoDialogAction(
                                 child: Text("No",
@@ -255,35 +326,7 @@ class _SelectedCaseState extends State<SelectedCase> {
               ],
             )
 
-            // Container(
-            //   width: double.infinity,
-            //   height: med.height * 0.54,
-            //   child: DefaultTabController(
-            //     length: 3,
-            //     child: Scaffold(
-            //       backgroundColor: Color(0xfff8f8f8),
-            //       appBar: PreferredSize(
-            //         preferredSize: Size.fromHeight(40.0),
-            //         child: Container(
-            //           //     color: Colors.green,
-            //           child: TabBar(
-            //               labelPadding: EdgeInsets.zero,
-            //               labelStyle: TextStyle(
-            //                   fontFamily: 'RobotoCondensed-Regular',
-            //                   fontWeight: FontWeight.bold),
-            //               // indicatorPadding:
-            //               //     EdgeInsets.symmetric(horizontal: 20),
-            //               labelColor: Colors.purple,
-            //               tabs: tablist),
-            //         ),
-            //       ),
-            //       body: Padding(
-            //         padding: const EdgeInsets.only(top: 8.0),
-            //         child: TabBarView(children: tabviewlist),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+
           ],
         ),
       ),
@@ -453,6 +496,7 @@ class _CarouselWithIndicatorState extends State<CarouselWithIndicatorDemo> {
   ];
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: cColor().black,
       body: Container(

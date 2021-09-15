@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Authentication/login_page.dart';
 import 'color_class.dart';
 
@@ -35,14 +36,16 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+
   @override
   void initState() {
     super.initState();
     Timer(
         Duration(seconds: 3),
-        () => Navigator.of(context).pushReplacement(
+            () => Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (BuildContext context) => Login())));
   }
+
 
   @override
   Widget build(BuildContext context) {

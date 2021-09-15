@@ -1,10 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sceelie/SignUp_Screen/SignUp_Screen.dart';
 import 'package:sceelie/screens/Forgot_password/Forgot_password_screen.dart';
 import 'package:sceelie/screens/main_admin_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../color_class.dart';
+import 'SignUp_Screen/SignUp_Screen.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,212 +20,253 @@ class _LoginState extends State<Login> {
   TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    Size med = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: cColor().black,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: med.height * 0.2,
-            ),
-
-            //logo image
-            Center(
-              child: Container(
-                height: med.height * 0.2,
-                width: med.width * 0.8,
-                decoration: BoxDecoration(
-                  color: cColor().black,
-                  image: DecorationImage(
-                    image: AssetImage("assets/logo.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+    Future<bool> _onWillPop() async {
+      return (await showDialog(
+        context: context,
+        builder: (context) =>
+        new AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+              side: BorderSide(color: Colors.white)),
+          title: new Text('Are you sure you want to exit?'),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                "No",
+                style: TextStyle(color: Colors.black),
               ),
             ),
-
-            SizedBox(
-              height: med.height * 0.08,
-            ),
-
-            //Username or email textfield
-            Center(
-              child: Container(
-                width: med.width * 0.65,
-                decoration: BoxDecoration(
-                  color: cColor().blue,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: cColor().yellow,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  cursorColor: cColor().yellow,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        borderSide: BorderSide(color: cColor().blue)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        borderSide: BorderSide(color: cColor().blue)),
-                    labelStyle: TextStyle(
-                      color: cColor().yellow,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Rosario"
-                    ),
-                    labelText: "Username or email",
-                    contentPadding: EdgeInsets.only(left: 18),
-                    // ignore: missing_return
-                  ),
-
-                  // validator: (val) => val.length < 6 ? 'Password too short.' : null,
-                  // onSaved: (val) => _password = val,
-                  // obscureText: _obscureText,
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: med.height * 0.04,
-            ),
-
-            //Password
-            Center(
-              child: Container(
-                width: med.width * 0.65,
-                decoration: BoxDecoration(
-                  color: cColor().blue,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: TextFormField(
-                  style: TextStyle(
-                    color: cColor().yellow,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  controller: passwordController,
-                  keyboardType: TextInputType.emailAddress,
-                  cursorColor: cColor().yellow,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        borderSide: BorderSide(color: cColor().blue)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        borderSide: BorderSide(color: cColor().blue)),
-                    labelStyle: TextStyle(
-                      color: cColor().yellow,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Rosario"
-                    ),
-                    labelText: "Password",
-                    contentPadding: EdgeInsets.only(left: 18),
-                    // ignore: missing_return
-                  ),
-
-                  // validator: (val) => val.length < 6 ? 'Password too short.' : null,
-                  // onSaved: (val) => _password = val,
-                  // obscureText: _obscureText,
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: med.height * 0.08,
-            ),
-
-            //login button
-            Container(
-              //margin: EdgeInsets.only(left: 15),
-              height: med.height * 0.06,
-              width: med.width * 0.35,
-              child: RaisedButton(
-                onPressed: () {
-                  passwordController.clear();
-                  emailController.clear();
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => MainAdminPage()));
-                },
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                      fontSize: 18,
-                      letterSpacing: 1.0,
-                      color: cColor().lightBlue,fontFamily: "Rosario"),
-                ),
-                color: cColor().yellow,
-                textColor: cColor().lightBlue,
-                hoverColor: cColor().lightYello,
-                highlightColor: cColor().lightYello,
-                splashColor: cColor().lightYello,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-            ),
-
-            SizedBox(
-              height: med.height * 0.03,
-            ),
-
-            //Sign Up text
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => SignUpScreen()));
-              },
-              child: Center(
-                child: Text(
-                  "Sign Up",
-                  style: GoogleFonts.rosario(
-                    textStyle: TextStyle(
-                      color: cColor().lightYello,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => ForgotPasswordScreen()));
-              },
-              child: Center(
-                child: Text(
-                  "Forgot Password?",
-                  style: GoogleFonts.rosario(
-                    textStyle: TextStyle(
-                      color: cColor().yellow,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+            FlatButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.brown)),
+              color: Colors.brown,
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                "Exit",
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ],
+        ),
+      )) ??
+          false;
+    }
+    Size med = MediaQuery.of(context).size;
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: cColor().black,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: med.height * 0.2,
+              ),
+
+              //logo image
+              Center(
+                child: Container(
+                  height: med.height * 0.2,
+                  width: med.width * 0.8,
+                  decoration: BoxDecoration(
+                    color: cColor().black,
+                    image: DecorationImage(
+                      image: AssetImage("assets/logo.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: med.height * 0.08,
+              ),
+
+              //Username or email textfield
+              Center(
+                child: Container(
+                  width: med.width * 0.65,
+                  decoration: BoxDecoration(
+                    color: cColor().blue,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: TextFormField(
+                    style: TextStyle(
+                      color: cColor().yellow,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    controller: emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: cColor().yellow,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide: BorderSide(color: cColor().blue)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide: BorderSide(color: cColor().blue)),
+                      labelStyle: TextStyle(
+                        color: cColor().yellow,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Rosario"
+                      ),
+                      labelText: "Username or email",
+                      contentPadding: EdgeInsets.only(left: 18),
+                      // ignore: missing_return
+                    ),
+
+                    // validator: (val) => val.length < 6 ? 'Password too short.' : null,
+                    // onSaved: (val) => _password = val,
+                    // obscureText: _obscureText,
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: med.height * 0.04,
+              ),
+
+              //Password
+              Center(
+                child: Container(
+                  width: med.width * 0.65,
+                  decoration: BoxDecoration(
+                    color: cColor().blue,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: TextFormField(
+                    style: TextStyle(
+                      color: cColor().yellow,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    controller: passwordController,
+                    keyboardType: TextInputType.emailAddress,
+                    cursorColor: cColor().yellow,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide: BorderSide(color: cColor().blue)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide: BorderSide(color: cColor().blue)),
+                      labelStyle: TextStyle(
+                        color: cColor().yellow,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Rosario"
+                      ),
+                      labelText: "Password",
+                      contentPadding: EdgeInsets.only(left: 18),
+                      // ignore: missing_return
+                    ),
+
+                    // validator: (val) => val.length < 6 ? 'Password too short.' : null,
+                    // onSaved: (val) => _password = val,
+                    // obscureText: _obscureText,
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: med.height * 0.08,
+              ),
+
+              //login button
+              Container(
+                //margin: EdgeInsets.only(left: 15),
+                height: med.height * 0.06,
+                width: med.width * 0.35,
+                child: RaisedButton(
+                  onPressed: ()async {
+                    final prefs = await SharedPreferences.getInstance();
+                    bool? logged = await prefs.setBool("LoggedIn",true);
+                    print(logged);
+
+                    passwordController.clear();
+                    emailController.clear();
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => MainAdminPage()));
+
+                  },
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                        fontSize: 18,
+                        letterSpacing: 1.0,
+                        color: cColor().lightBlue,fontFamily: "Rosario"),
+                  ),
+                  color: cColor().yellow,
+                  textColor: cColor().lightBlue,
+                  hoverColor: cColor().lightYello,
+                  highlightColor: cColor().lightYello,
+                  splashColor: cColor().lightYello,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+
+              SizedBox(
+                height: med.height * 0.03,
+              ),
+
+              //Sign Up text
+              GestureDetector(
+                onTap: () {
+
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => SignUpScreen()));
+                },
+                child: Center(
+                  child: Text(
+                    "Sign Up",
+                    style: GoogleFonts.rosario(
+                      textStyle: TextStyle(
+                        color: cColor().lightYello,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => ForgotPasswordScreen()));
+                },
+                child: Center(
+                  child: Text(
+                    "Forgot Password?",
+                    style: GoogleFonts.rosario(
+                      textStyle: TextStyle(
+                        color: cColor().yellow,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
